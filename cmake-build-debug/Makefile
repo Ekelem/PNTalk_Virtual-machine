@@ -39,10 +39,10 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = "/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5153.40/CLion.app/Contents/bin/cmake/mac/bin/cmake"
+CMAKE_COMMAND = "/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5429.37/CLion.app/Contents/bin/cmake/mac/bin/cmake"
 
 # The command to remove a file.
-RM = "/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5153.40/CLion.app/Contents/bin/cmake/mac/bin/cmake" -E remove -f
+RM = "/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5429.37/CLion.app/Contents/bin/cmake/mac/bin/cmake" -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
@@ -59,7 +59,7 @@ CMAKE_BINARY_DIR = /Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	"/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5153.40/CLion.app/Contents/bin/cmake/mac/bin/cmake" -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	"/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5429.37/CLion.app/Contents/bin/cmake/mac/bin/cmake" -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -70,7 +70,7 @@ rebuild_cache/fast: rebuild_cache
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	"/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5153.40/CLion.app/Contents/bin/cmake/mac/bin/cmake" -E echo No\ interactive\ CMake\ dialog\ available.
+	"/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5429.37/CLion.app/Contents/bin/cmake/mac/bin/cmake" -E echo No\ interactive\ CMake\ dialog\ available.
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -122,6 +122,33 @@ BP: cmake_check_build_system
 BP/fast:
 	$(MAKE) -f CMakeFiles/BP.dir/build.make CMakeFiles/BP.dir/build
 .PHONY : BP/fast
+
+src/error.o: src/error.cpp.o
+
+.PHONY : src/error.o
+
+# target to build an object file
+src/error.cpp.o:
+	$(MAKE) -f CMakeFiles/BP.dir/build.make CMakeFiles/BP.dir/src/error.cpp.o
+.PHONY : src/error.cpp.o
+
+src/error.i: src/error.cpp.i
+
+.PHONY : src/error.i
+
+# target to preprocess a source file
+src/error.cpp.i:
+	$(MAKE) -f CMakeFiles/BP.dir/build.make CMakeFiles/BP.dir/src/error.cpp.i
+.PHONY : src/error.cpp.i
+
+src/error.s: src/error.cpp.s
+
+.PHONY : src/error.s
+
+# target to generate assembly for a file
+src/error.cpp.s:
+	$(MAKE) -f CMakeFiles/BP.dir/build.make CMakeFiles/BP.dir/src/error.cpp.s
+.PHONY : src/error.cpp.s
 
 src/lex_analyzator.o: src/lex_analyzator.cpp.o
 
@@ -186,6 +213,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... BP"
+	@echo "... src/error.o"
+	@echo "... src/error.i"
+	@echo "... src/error.s"
 	@echo "... src/lex_analyzator.o"
 	@echo "... src/lex_analyzator.i"
 	@echo "... src/lex_analyzator.s"

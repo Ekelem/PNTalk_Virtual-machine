@@ -1,4 +1,4 @@
-"/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5153.40/CLion.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/tomas/Documents/WORK/SProjects/BP
+"/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5429.37/CLion.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/tomas/Documents/WORK/SProjects/BP
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug

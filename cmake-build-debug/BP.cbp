@@ -80,10 +80,16 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/lib/error.h">
+			<Option target="BP"/>
+		</Unit>
 		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/lib/global.h">
 			<Option target="BP"/>
 		</Unit>
 		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/lib/lex_analyzator.h">
+			<Option target="BP"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/src/error.cpp">
 			<Option target="BP"/>
 		</Unit>
 		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/src/lex_analyzator.cpp">

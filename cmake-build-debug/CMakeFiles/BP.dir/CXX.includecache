@@ -6,7 +6,41 @@
 
 #IncludeRegexTransform: 
 
-/Users/tomas/Documents/WORK/SProjects/BP/main.cpp
+/Users/tomas/Documents/WORK/SProjects/BP/lib/error.h
+string
+-
+
+/Users/tomas/Documents/WORK/SProjects/BP/lib/global.h
 iostream
 -
+algorithm
+-
+error.h
+/Users/tomas/Documents/WORK/SProjects/BP/lib/error.h
+
+/Users/tomas/Documents/WORK/SProjects/BP/lib/lex_analyzator.h
+global.h
+/Users/tomas/Documents/WORK/SProjects/BP/lib/global.h
+cstring
+-
+tuple
+-
+fstream
+-
+regex
+-
+queue
+-
+climits
+-
+
+/Users/tomas/Documents/WORK/SProjects/BP/src/lex_analyzator.cpp
+../lib/lex_analyzator.h
+/Users/tomas/Documents/WORK/SProjects/BP/lib/lex_analyzator.h
+
+/Users/tomas/Documents/WORK/SProjects/BP/src/main.cpp
+../lib/global.h
+/Users/tomas/Documents/WORK/SProjects/BP/lib/global.h
+../lib/lex_analyzator.h
+/Users/tomas/Documents/WORK/SProjects/BP/lib/lex_analyzator.h
 

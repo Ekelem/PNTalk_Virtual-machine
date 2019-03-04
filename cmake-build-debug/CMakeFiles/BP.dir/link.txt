@@ -1,1 +1,1 @@
-/Library/Developer/CommandLineTools/usr/bin/c++  -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/BP.dir/src/main.cpp.o CMakeFiles/BP.dir/src/lex_analyzator.cpp.o  -o BP 
+/Library/Developer/CommandLineTools/usr/bin/c++  -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/BP.dir/src/main.cpp.o CMakeFiles/BP.dir/src/lex_analyzator.cpp.o CMakeFiles/BP.dir/src/error.cpp.o  -o BP 

@@ -1,12 +1,13 @@
 //
-// Created by Tomas Lapsansky on 2019-01-22.
+// Created by Tomas Lapsansky
 //
 
 #ifndef BP_GLOBAL_H
 #define BP_GLOBAL_H
 
-using namespace std;
-
 #include <iostream>
+#include <algorithm>
+
+#include "error.h"
 
 #endif //BP_GLOBAL_H
