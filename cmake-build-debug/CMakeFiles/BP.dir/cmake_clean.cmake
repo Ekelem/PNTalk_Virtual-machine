@@ -2,6 +2,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/BP.dir/src/main.cpp.o"
   "CMakeFiles/BP.dir/src/lex_analyzator.cpp.o"
   "CMakeFiles/BP.dir/src/error.cpp.o"
+  "CMakeFiles/BP.dir/src/parse.cpp.o"
+  "CMakeFiles/BP.dir/src/semantic.cpp.o"
   "BP.pdb"
   "BP"
 )

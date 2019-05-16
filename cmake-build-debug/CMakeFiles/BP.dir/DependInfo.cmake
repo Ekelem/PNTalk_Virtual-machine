@@ -7,6 +7,8 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/tomas/Documents/WORK/SProjects/BP/src/error.cpp" "/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/CMakeFiles/BP.dir/src/error.cpp.o"
   "/Users/tomas/Documents/WORK/SProjects/BP/src/lex_analyzator.cpp" "/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/CMakeFiles/BP.dir/src/lex_analyzator.cpp.o"
   "/Users/tomas/Documents/WORK/SProjects/BP/src/main.cpp" "/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/CMakeFiles/BP.dir/src/main.cpp.o"
+  "/Users/tomas/Documents/WORK/SProjects/BP/src/parse.cpp" "/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/CMakeFiles/BP.dir/src/parse.cpp.o"
+  "/Users/tomas/Documents/WORK/SProjects/BP/src/semantic.cpp" "/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/CMakeFiles/BP.dir/src/semantic.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 

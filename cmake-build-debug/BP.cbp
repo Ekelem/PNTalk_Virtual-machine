@@ -37,8 +37,8 @@
 					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="BP">
-				<Option output="/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/BP" prefix_auto="0" extension_auto="0"/>
+			<Target title="VM">
+				<Option output="/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/VM" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -52,14 +52,14 @@
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 BP"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 VM"/>
 					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="BP/fast">
-				<Option output="/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/BP" prefix_auto="0" extension_auto="0"/>
+			<Target title="VM/fast">
+				<Option output="/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/VM" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -73,30 +73,132 @@
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 BP/fast"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 VM/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Translator">
+				<Option output="/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Translator" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 Translator"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Translator/fast">
+				<Option output="/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Translator" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 Translator/fast"/>
 					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/lib/error.h">
-			<Option target="BP"/>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/Translator/lib/error.h">
+			<Option target="Translator"/>
 		</Unit>
-		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/lib/global.h">
-			<Option target="BP"/>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/Translator/lib/global.h">
+			<Option target="Translator"/>
 		</Unit>
-		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/lib/lex_analyzator.h">
-			<Option target="BP"/>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/Translator/lib/lexAnalyzator.h">
+			<Option target="Translator"/>
 		</Unit>
-		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/src/error.cpp">
-			<Option target="BP"/>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/Translator/lib/parse.h">
+			<Option target="Translator"/>
 		</Unit>
-		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/src/lex_analyzator.cpp">
-			<Option target="BP"/>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/Translator/lib/semantic.h">
+			<Option target="Translator"/>
 		</Unit>
-		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/src/main.cpp">
-			<Option target="BP"/>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/Translator/src/error.cpp">
+			<Option target="Translator"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/Translator/src/lexAnalyzator.cpp">
+			<Option target="Translator"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/Translator/src/main.cpp">
+			<Option target="Translator"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/Translator/src/parse.cpp">
+			<Option target="Translator"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/Translator/src/semantic.cpp">
+			<Option target="Translator"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/lib/error.h">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/lib/global.h">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/lib/instance.h">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/lib/method.h">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/lib/object.h">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/lib/place.h">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/lib/trans.h">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/lib/vm.h">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/src/error.cpp">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/src/instance.cpp">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/src/main.cpp">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/src/method.cpp">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/src/object.cpp">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/src/place.cpp">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/src/trans.cpp">
+			<Option target="VM"/>
+		</Unit>
+		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/VM/src/vm.cpp">
+			<Option target="VM"/>
 		</Unit>
 		<Unit filename="/Users/tomas/Documents/WORK/SProjects/BP/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

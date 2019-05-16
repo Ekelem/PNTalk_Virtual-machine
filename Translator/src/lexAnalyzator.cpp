@@ -1,14 +1,15 @@
-//
-// Created by Tomas Lapsansky
-//
+/**
+ * @file    lexAnalyzator.cpp
+ * @author  Tomas Lapsansky <xlapsa00@stud.fit.vutbr.cz>
+ */
 
 using namespace std;
 
-#include "../lib/lex_analyzator.h"
+#include "../lib/lexAnalyzator.h"
 
-lex_analyzator::lex_analyzator(std::string file) {
+lexAnalyzator::lexAnalyzator(std::string file) {
 
-    brackets = false;
+    line = 0;
     srcFile.open(file);
 
     if(!srcFile.is_open()) {
@@ -25,18 +26,23 @@ lex_analyzator::lex_analyzator(std::string file) {
  *  3   delimeter (,)
  *  11  number
  *  12  string
- *  13  symbol
- *  14  bool
- *  15  nil
- *  16  pseudo-variable
- *  17  variable/function name
- *  18  object
- *  20  term
+ *  13  char
+ *  14  symbol
+ *  15  bool
+ *  16  nil
+ *  17  pseudo-variable
+ *  18  function
+ *  19  variable/function name
+ *  20  object
+ *  30  term
+ *  31  empty-term
+ *  32  list
+ *  33  multiset
  *
  *  99  undefined
  */
 
-tuple<int, string> lex_analyzator::getToken() {
+tuple<int, string> lexAnalyzator::getToken() {
 
     string line;
 
@@ -60,6 +66,7 @@ tuple<int, string> lex_analyzator::getToken() {
             tokens.push(tuple<int, string>(0, "EOF"));
             break;
         }
+        this->line++;
     } while(line.empty());
 
     /* Parse line */
@@ -173,7 +180,7 @@ tuple<int, string> lex_analyzator::getToken() {
                 /* Extract */
                 if(brackets == 0) {
 
-                    /* Maybe TODO extract function */
+                    /* Possible extract function */
                     char *copy = (char*)malloc(line.size());
 
                     string sub = line.substr(lastChar, i-lastChar+1);
@@ -192,7 +199,7 @@ tuple<int, string> lex_analyzator::getToken() {
         }
     }
 
-    tokens.push(tuple<int, string>(2, "\tENDL"));
+    tokens.push(tuple<int, string>(2, "ENDL"));
 
     tuple<int, string> ret = tokens.front();
 
@@ -203,34 +210,36 @@ tuple<int, string> lex_analyzator::getToken() {
     return ret;
 }
 
-int lex_analyzator::checkWord(std::string src) {
+int lexAnalyzator::checkWord(std::string src) {
 
-    if(is_keyword(src)) {
+    if(isKeyword(src)) {
         return 1;
-    } else if(is_number(src)) {
+    } else if(isNumber(src)) {
         return 11;
-    } else if(is_string(src)) {
+    } else if(isString(src)) {
         return 12;
-    } else if(is_symbol(src)) {
+    } else if(isChar(src)) {
         return 13;
-    } else if(is_bool(src)) {
+    } else if(isSymbol(src)) {
         return 14;
-    } else if(is_nil(src)) {
+    } else if(isBool(src)) {
         return 15;
-    } else if(is_pseudo_variable(src)) {
+    } else if(isNil(src)) {
         return 16;
-    } else if(is_variable(src)) {
+    } else if(isPseudoVariable(src)) {
         return 17;
-    } else if(is_object(src)) {
+    } else if(isFunction(src)) {
         return 18;
+    } else if(isVariable(src)) {
+        return 19;
+    } else if(isObject(src)) {
+        return 20;
     }
 
     return 99;
 }
 
-void lex_analyzator::pushWord(char *token) {
-
-    //TODO analyze keyword
+void lexAnalyzator::pushWord(char *token) {
 
     std::string str = token;
 
@@ -242,14 +251,83 @@ void lex_analyzator::pushWord(char *token) {
 
 }
 
-void lex_analyzator::checkTerm(char *token) {
+void lexAnalyzator::checkTerm(char *token) {
 
-    //TODO analyze term
+    std::string str = token;
 
-    tokens.push(tuple<int, string>(20, token));
+    if(str[0] == '(' && str[str.size() - 1] == ')') {
+        /* This can be analyzed */
+
+        /* Erase brackets */
+        str.erase(0, 1);
+        str.erase(str.size() - 1, 1);
+
+        str = trim(str);
+
+        if(str.find("‘") != string::npos || (str.find(',') != string::npos && str.find('(') == string::npos)) {    /* Multiset */
+
+            tokens.push(tuple<int, string>(33, "set(" + str + ")"));
+            return;
+        }
+
+        if(str[0] == '(') {     /* List */
+
+            /* Erase brackets */
+            str.erase(0, 1);
+            str.erase(str.size() - 1, 1);
+
+            tokens.push(tuple<int, string>(32, token));
+
+            char *copy = (char*)malloc(str.size());
+
+            const char* str_c = str.c_str();
+            strcpy(copy, str_c);
+
+            char *listItem = std::strtok(copy, ",");
+
+            while (listItem != nullptr) {
+
+                std::string strg = listItem;
+                strg = trim(strg);
+                int ret = checkWord(strg);
+
+                tokens.push(tuple<int, string>(ret, strg));
+
+                listItem = std::strtok(nullptr, ",");
+
+                if(listItem != nullptr)
+                    tokens.push(tuple<int, string>(3, ","));
+            }
+
+            return;
+        }
+
+        if(str.empty()) {   /* Empty brackets */
+            tokens.push(tuple<int, string>(31, token));
+            return;
+        }
+
+        int tokenAnalyze = checkWord(str);
+        if(tokenAnalyze != 99) {    /* Push if you can */
+            tokens.push(tuple<int, string>(tokenAnalyze, token));
+            return;
+        }
+
+        /* Check term */
+
+    } else if(str[0] == '{' && str[str.size() - 1] == '}') {
+
+        tokens.push(tuple<int, string>(30, token));
+
+    } else {
+
+        tokens.push(tuple<int, string>(99, token));
+        return;
+    }
+
 }
 
-std::string lex_analyzator::trim(string str)
+std::string lexAnalyzator::trim(string str)
 {
     int i = 0;
     int first = 0;
@@ -279,12 +357,15 @@ std::string lex_analyzator::trim(string str)
         i--;
     }
 
-    return str.substr(first, last+1);
+    string *retStr = new string;
+    *retStr = str.substr(first, last+1);
+
+    return *retStr;
 }
 
-bool lex_analyzator::is_keyword(std::string src) {
+bool lexAnalyzator::isKeyword(std::string src) {
 
-    for(const std::string word : lex_analyzator::keywords) {
+    for(const std::string word : lexAnalyzator::keywords) {
         if(src == word) {
             return true;
         }
@@ -293,37 +374,46 @@ bool lex_analyzator::is_keyword(std::string src) {
     return false;
 }
 
-bool lex_analyzator::is_number(string src) {
+bool lexAnalyzator::isNumber(string src) {
 
-    return regex_match (src, regex(R"(( ([0-9]+(\.[0-9]*)?) | (\.[0-9]+) )( (e|E)(\+|\-)[0-9]+(\.[0-9])* ))"));
+    return regex_match (src, regex(R"((\+|\-)?([0-9]+(\.[0-9]*)?(e(\+|\-)?[0-9]+)?))"));
 }
 
-bool lex_analyzator::is_string(string src) {
+bool lexAnalyzator::isString(string src) {
 
     return regex_match (src, regex("\'.*\'"));
 }
 
-bool lex_analyzator::is_symbol(string src) {
+bool lexAnalyzator::isChar(string src) {
+
+    return regex_match (src, regex("#.+") );
+}
+
+bool lexAnalyzator::isSymbol(string src) {
 
     return regex_match (src, regex("$.+") );
 }
 
-bool lex_analyzator::is_bool(string src) {
+bool lexAnalyzator::isBool(string src) {
     return src == "true" || src == "false";
 }
 
-bool lex_analyzator::is_nil(string src) {
+bool lexAnalyzator::isNil(string src) {
     return src == "nil";
 }
 
-bool lex_analyzator::is_pseudo_variable(string src) {
+bool lexAnalyzator::isPseudoVariable(string src) {
     return src == "self" || src == "super";
 }
 
-bool lex_analyzator::is_variable(string src) {
+bool lexAnalyzator::isFunction(std::string src) {
+    return regex_match (src, regex("[a-z]([a-z]|[A-Z]|[0-9])*:") );
+}
+
+bool lexAnalyzator::isVariable(string src) {
     return regex_match (src, regex("[a-z]([a-z]|[A-Z]|[0-9])*") );
 }
 
-bool lex_analyzator::is_object(string src) {
+bool lexAnalyzator::isObject(string src) {
     return regex_match (src, regex("[A-Z]([a-z]|[A-Z]|[0-9])*") );
 }

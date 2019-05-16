@@ -34,10 +34,10 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = "/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5429.37/CLion.app/Contents/bin/cmake/mac/bin/cmake"
+CMAKE_COMMAND = "/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/191.6183.77/CLion.app/Contents/bin/cmake/mac/bin/cmake"
 
 # The command to remove a file.
-RM = "/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/183.5429.37/CLion.app/Contents/bin/cmake/mac/bin/cmake" -E remove -f
+RM = "/Users/tomas/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/191.6183.77/CLion.app/Contents/bin/cmake/mac/bin/cmake" -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
@@ -96,11 +96,39 @@ CMakeFiles/BP.dir/src/error.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/BP.dir/src/error.cpp.s"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/tomas/Documents/WORK/SProjects/BP/src/error.cpp -o CMakeFiles/BP.dir/src/error.cpp.s
 
+CMakeFiles/BP.dir/src/parse.cpp.o: CMakeFiles/BP.dir/flags.make
+CMakeFiles/BP.dir/src/parse.cpp.o: ../src/parse.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/BP.dir/src/parse.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/BP.dir/src/parse.cpp.o -c /Users/tomas/Documents/WORK/SProjects/BP/src/parse.cpp
+
+CMakeFiles/BP.dir/src/parse.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/BP.dir/src/parse.cpp.i"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/tomas/Documents/WORK/SProjects/BP/src/parse.cpp > CMakeFiles/BP.dir/src/parse.cpp.i
+
+CMakeFiles/BP.dir/src/parse.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/BP.dir/src/parse.cpp.s"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/tomas/Documents/WORK/SProjects/BP/src/parse.cpp -o CMakeFiles/BP.dir/src/parse.cpp.s
+
+CMakeFiles/BP.dir/src/semantic.cpp.o: CMakeFiles/BP.dir/flags.make
+CMakeFiles/BP.dir/src/semantic.cpp.o: ../src/semantic.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/BP.dir/src/semantic.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/BP.dir/src/semantic.cpp.o -c /Users/tomas/Documents/WORK/SProjects/BP/src/semantic.cpp
+
+CMakeFiles/BP.dir/src/semantic.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/BP.dir/src/semantic.cpp.i"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/tomas/Documents/WORK/SProjects/BP/src/semantic.cpp > CMakeFiles/BP.dir/src/semantic.cpp.i
+
+CMakeFiles/BP.dir/src/semantic.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/BP.dir/src/semantic.cpp.s"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/tomas/Documents/WORK/SProjects/BP/src/semantic.cpp -o CMakeFiles/BP.dir/src/semantic.cpp.s
+
 # Object files for target BP
 BP_OBJECTS = \
 "CMakeFiles/BP.dir/src/main.cpp.o" \
 "CMakeFiles/BP.dir/src/lex_analyzator.cpp.o" \
-"CMakeFiles/BP.dir/src/error.cpp.o"
+"CMakeFiles/BP.dir/src/error.cpp.o" \
+"CMakeFiles/BP.dir/src/parse.cpp.o" \
+"CMakeFiles/BP.dir/src/semantic.cpp.o"
 
 # External object files for target BP
 BP_EXTERNAL_OBJECTS =
@@ -108,9 +136,11 @@ BP_EXTERNAL_OBJECTS =
 BP: CMakeFiles/BP.dir/src/main.cpp.o
 BP: CMakeFiles/BP.dir/src/lex_analyzator.cpp.o
 BP: CMakeFiles/BP.dir/src/error.cpp.o
+BP: CMakeFiles/BP.dir/src/parse.cpp.o
+BP: CMakeFiles/BP.dir/src/semantic.cpp.o
 BP: CMakeFiles/BP.dir/build.make
 BP: CMakeFiles/BP.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable BP"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/tomas/Documents/WORK/SProjects/BP/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable BP"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/BP.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
