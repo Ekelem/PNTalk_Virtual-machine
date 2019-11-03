@@ -219,7 +219,7 @@ void instance::doInstruction(std::string *instruction,
         std::string val;
         bool obj;
 
-        if(tempStack->front() == "NEWOBJ") {    /* Internal check */
+        if(!tempStack->empty() && (tempStack->front() == "NEWOBJ")) {    /* Internal check */
             /* This is new object */
             tempStack->pop_front();
             val = tempStack->front();
