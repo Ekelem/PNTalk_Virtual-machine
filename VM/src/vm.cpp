@@ -76,7 +76,7 @@ void vm::setMain() {
             new (newInstance) instance(&str, this);
 
             newInstance->create(main);
-            newInstance->referenceCounter = INT_MAX;    /* Only for main */
+            newInstance->referenceCounter = INT32_MAX;    /* Only for main */
 
             objectInstance.push_back(newInstance);
             return;
@@ -533,7 +533,7 @@ void vm::detail() {
     for(instance *inst: objectInstance) {
         std::cout << inst->reference->name << '\t';
 
-        if(inst->referenceCounter == INT_MAX) {
+        if(inst->referenceCounter == INT32_MAX) {
             std::cout << "- main" << std::endl;
         } else {
             std::cout << " - " << inst << std::endl;
