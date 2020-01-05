@@ -1,10 +1,12 @@
 /**
  * @file    main.cpp
  * @author  Tomas Lapsansky <xlapsa00@stud.fit.vutbr.cz>
+ *          Erik Kelemen <xkelem01@stud.fit.vutbr.cz>
  */
 
 #include "../lib/global.h"
 #include "../lib/vm.h"
+
 
 void badStarting() {
     std::cout << "Virtual machine has to be started as:" << std::endl;
@@ -21,27 +23,66 @@ void showStartingDialog(vm* virtualMachine) {
     virtualMachine->help();
 }
 
+void help() {
+    std::cout << "Virtual machine has to be started as:" << std::endl;
+    std::cout << "./program [-f|--file <file>] [-s|--steps <steps>]|[-h|--help]" << std::endl;
+    std::cout << "<file>\tname of the file" << std::endl;
+    std::cout << "<steps>\tnumber of simulation steps" << std::endl;
+}
+
 int main(int argc, char * argv[]) {
 
-    if(argc != 3) {
-        badStarting();
+    const char* const short_opts = "f:s:h";
+    const option long_opts[] = {
+            {"file", required_argument, nullptr, 'f'},
+            {"steps", required_argument, nullptr, 's'},
+            {"help", no_argument, nullptr, 'h'},
+            {nullptr, no_argument, nullptr, 0}
+    };
+
+    auto opt = getopt_long(argc, argv, short_opts, long_opts, nullptr);
+    int steps = 20;
+    std::string path = "";
+    while (opt != -1)
+    {
+        switch (opt)
+        {
+        case 'f':
+            path = optarg;
+            break;
+
+        case 's':
+            steps = std::stoi(optarg);
+            break;
+
+        case 'h': // -h or --help
+        case '?': // Unrecognized option
+        default:
+            help();
+            break;
+        }
+
+        opt = getopt_long(argc, argv, short_opts, long_opts, nullptr);
+    }
+    if(path == "") {
+        help();
         exit(1);
     }
-
-    if(strcmp(argv[1], "-f") != 0) {
-        badStarting();
-        exit(1);
-    }
-
-    std::string file = argv[2];
 
     vm virtualMachine = vm();
 
-    virtualMachine.parseInput(&file);
+    virtualMachine.parseInput(&path);
 
     std::string str;
 
-    showStartingDialog(&virtualMachine);
+    while(steps > 0) {
+        //virtualMachine.detail();
+        virtualMachine.archiver.startStep();
+        virtualMachine.step();
+        steps--;
+    }
+
+    /*showStartingDialog(&virtualMachine);
 
     while(true) {
         std::cout << "Enter input: ";
@@ -58,8 +99,9 @@ int main(int argc, char * argv[]) {
         } else {
             virtualMachine.help();
         }
-    }
+    }*/
 
+    virtualMachine.archiver.generate();
     virtualMachine.quit();
 
     return 0;

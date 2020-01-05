@@ -13,8 +13,13 @@
 #include "global.h"
 #include "object.h"
 #include "instance.h"
+#include "outputgen.h"
 
+#include <getopt.h>
 #include <fstream>
+#include <sstream>
+#include <map>
+
 
 class vm {
 
@@ -24,6 +29,8 @@ public:
     std::string mainName;
     std::ifstream srcFile;
     std::string parseLine;
+
+    outputgen archiver;
 
     std::list<std::string> tempStack;
     bool finished;

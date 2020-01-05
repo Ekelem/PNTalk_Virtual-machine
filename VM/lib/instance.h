@@ -13,6 +13,7 @@
 #include "global.h"
 #include "object.h"
 #include "place.h"
+#include "outputgen.h"
 
 #include <regex>
 #include <sstream>

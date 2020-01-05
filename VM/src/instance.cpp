@@ -1,6 +1,7 @@
 /**
  * @file    instance.cpp
- * @author  Tomas Lapsansky <xlapsa00@stud.fit.vutbr.cz>
+ * @author  Tomas Lapsansky <xlapsa00@stud.fit.vutbr.cz>,
+ *          Erik Kelemen <xkelem01@stud.fit.vutbr.cz>
  */
 
 #include "../lib/instance.h"
@@ -224,6 +225,11 @@ void instance::doInstruction(std::string *instruction,
             tempStack->pop_front();
             val = tempStack->front();
             tempStack->pop_front();
+            instance* ref = (instance*)(std::stoul(val, nullptr, 16));
+
+            // record creating instance of object
+            virtualMachine->archiver.record(archiveInstruction("create instance", name, reference->name, ref->name, ref->reference->name));
+
             obj = true;
         } else {
             if(!tempStack->empty()) {
@@ -250,7 +256,9 @@ void instance::doInstruction(std::string *instruction,
         for(object *newObj: virtualMachine->objects) {
             if(newObj->name == className) {
 
-                std::string str = "newInstance";
+                static size_t id = 0;
+                std::string str = "instance-" + std::to_string(id);
+                id++;
 
                 new (newInstance) instance(&str, virtualMachine);
 
@@ -372,11 +380,24 @@ void instance::doInstruction(std::string *instruction,
 
         /* Get instance */
         long address = std::strtol(element.second.c_str(), nullptr, 16);
-
+        
         /* Call function */
         auto *obj = (instance*)address;
 
+        // record message between instances
+        struct archiveInstruction instruction = archiveInstruction(functionName, name, reference->name, obj->name, obj->reference->name);
+        virtualMachine->archiver.record(instruction);
+
+        size_t head = tempStack->size();
         obj->callFunction(&functionName, tempStack);
+        size_t offset = tempStack->size() > head ? tempStack->size() - head : 0;
+        std::vector<std::string> response = std::vector<std::string>();
+        for (size_t i = 1; i <= offset; i++) {
+            response.push_back(*std::next(tempStack->begin(), tempStack->size()-i));
+        }
+        if (offset)
+            // if method returned value on stack record response
+            virtualMachine->archiver.record(archiveInstruction(instruction.getId(), response));
     }
 }
 
@@ -403,8 +424,9 @@ bool instance::checkGuard(trans *transition, std::unordered_map<std::string, std
         in = true;
 
         if((pos = action.find("CALL ")) != std::string::npos) {
-
+            virtualMachine->archiver.startTrans(std::pair<std::string, std::string>(transition->name, reference->name));
             doInstruction(&action, variables, tempStack);
+            virtualMachine->archiver.stopTrans(std::pair<std::string, std::string>(transition->name, reference->name));
 
             if(tempStack->front() != "true") {
                 return false;
@@ -481,8 +503,17 @@ bool instance::checkGuard(trans *transition, std::unordered_map<std::string, std
 
 void instance::doAction(trans *transition, std::unordered_map<std::string, std::pair<int, std::string>> *variables, std::list<std::string> *tempStack) {
 
+    uint counter = 0;
+
+    virtualMachine->archiver.startTrans(std::pair<std::string, std::string>(transition->name, reference->name));
     for(std::string action: transition->action) {
         doInstruction(&action, variables, tempStack);
+        counter++;
+    }
+    virtualMachine->archiver.stopTrans(std::pair<std::string, std::string>(transition->name, reference->name));
+    if (counter) {
+        struct archiveTransition trans = archiveTransition(transition->name, name, reference->name);
+        virtualMachine->archiver.record(trans);
     }
 
 }
@@ -626,7 +657,6 @@ void instance::callFunction(std::string *str, std::list<std::string> *tempStack)
         if(actualMethod->isSync) {
             /* Push temp every input variable */
             for(std::string par: actualMethod->params) {
-
                 tempStack->push_front(variables[par].second);
             }
 
