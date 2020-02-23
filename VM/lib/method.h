@@ -19,7 +19,7 @@ class method {
 public:
     std::string name;
     std::list<std::string> params;
-    std::list<place*> places;
+    std::list<place *> places;
     std::list<trans*> transitions;
     bool isSync;
 

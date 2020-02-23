@@ -22,6 +22,16 @@ void vm::parseInput(std::string *file) {
     setMain();
 }
 
+void vm::registerScenario(std::string *file) {
+
+    try {
+        scenario = YAML::LoadFile(*file);
+    } catch (const YAML::BadFile e){
+        errorMessage(10, "Can't open file: " + *file);
+    }
+
+}
+
 bool vm::hasKeyword() {
     if(parseLine.find("COND") != std::string::npos) {
         return true;
@@ -66,6 +76,12 @@ void vm::getMain() {
     mainName = parseLine.substr(9);    /* POS of name */
 }
 
+struct forced_object {
+    std::string instance_name;
+    std::string class_name;
+    std::map<std::string, std::string> places;
+};
+
 void vm::setMain() {
     for(object *main: objects) {
         if(main->name == this->mainName) {
@@ -79,9 +95,44 @@ void vm::setMain() {
             newInstance->referenceCounter = INT32_MAX;    /* Only for main */
 
             objectInstance.push_back(newInstance);
-            return;
+            newInstance->recordInitial();
         }
     }
+
+    for (YAML::const_iterator it = scenario.begin(); it != scenario.end(); it++)
+    {
+
+        std::string instance_name = it->first.Scalar();
+        std::string class_name = it->second["class"].Scalar();
+        YAML::Node places = it->second["places"];
+
+        for(object *new_instance: objects) {
+            if (new_instance->name == class_name) {
+                instance * newInstance = getInstance(instance_name);
+                if (newInstance == nullptr) {
+                    newInstance = (instance *) malloc(sizeof(instance));
+                    new(newInstance) instance(&instance_name, this);
+                    newInstance->create(new_instance);
+                    newInstance->referenceCounter = INT32_MAX;
+                    objectInstance.push_back(newInstance);
+                }
+
+                if (places.IsDefined() && places.IsMap())
+                    for (YAML::const_iterator plit = places.begin(); plit != places.end(); plit++) {
+                        std::string place_name = plit->first.Scalar();
+
+                        for (auto & place: newInstance->places) {
+                            if (place->name == place_name)
+                                std::cout << place_name << std::endl;
+                            place->values.emplace_back(std::pair<int, std::string>(0, plit->second.Scalar()));
+                        }
+                    }
+                std::cout << "recordInitial" << std::endl;
+                newInstance->recordInitial();
+            }
+        }
+    }
+    return;
 }
 
 void vm::getClasses() {
@@ -100,6 +151,14 @@ void vm::getClasses() {
 
         fillClass(newObject);
     }
+}
+
+instance * vm::getInstance(std::string name) {
+    for (auto it = objectInstance.begin(); it != objectInstance.end(); it++) {
+        if ((*it)->name == name)
+            return *it;
+    }
+    return nullptr;
 }
 
 void vm::fillClass(object *newObject) {
@@ -539,7 +598,7 @@ void vm::detail() {
             std::cout << " - " << inst << std::endl;
         }
 
-        for(place * element: inst->places) {
+        for(auto& element: inst->places) {
             std::cout << "\t place " << element->name << "\t = ";
             for(std::pair<int, std::string> output: element->values) {
                 std::cout << output.second << " ";

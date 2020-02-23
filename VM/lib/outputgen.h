@@ -12,8 +12,15 @@
 
 #include "cereal/archives/json.hpp"
 #include "cereal/types/vector.hpp"
+#include "cereal/types/map.hpp"
+#include "cereal/types/list.hpp"
 #include "cereal/types/string.hpp"
+
+#include "instance.h"
+
 #include <list>
+#include <map>
+
 
 struct archiveInstruction
 {
@@ -82,14 +89,39 @@ struct archiveResponse
     }
 };
 
+struct transitionCache
+{
+    std::string name;
+    std::string cls;
+    std::map<std::string, std::list<std::string>> state;
+
+    /*transitionCache(instance & inst) : name(inst->name), cls(inst->reference->name), state(inst->)
+    {
+
+    }*/
+
+};
+
+struct stackTransition
+{
+    std::string	caller;
+    std::string cls;
+    std::list<place *> places;
+
+    stackTransition(std::string name, std::string reference, std::list<place *> listPlaces) : caller(name), cls(reference), places(listPlaces)
+    {
+
+    }
+};
+
 struct archiveTransition
 {
     uint id;
 	std::string name;
 	std::string	instance;
 	std::string reference;
+	//std::list<place *> places;
 
-	//std::map<std::string, std::string> args;
 	archiveTransition(std::string transition, std::string instance, std::string instanceClass)
 	: name(transition), instance(instance), reference(instanceClass) {
         static uint id_provider = 0;
@@ -118,6 +150,24 @@ struct archiveStep
 	} 
 };
 
+struct archiveInitial
+{
+    std::string cls;
+    std::string inst;
+    std::list<place *> places;
+
+    archiveInitial(std::string instanceName, std::string instanceClass, std::list<place *> instancePlaces) : inst(instanceName), cls(instanceClass), places(instancePlaces) {
+
+    }
+
+    template<class Archive> void serialize(Archive & ar)
+    {
+        ar( cereal::make_nvp("instance", inst),
+            cereal::make_nvp("class", cls),
+            cereal::make_nvp("places", places));
+    }
+};
+
 class outputgen {
 
 public:
@@ -129,11 +179,12 @@ public:
     void generate();
 
     void startStep();
-    void startTrans(std::pair<std::string, std::string> trans);
-    void stopTrans(std::pair<std::string, std::string> trans);
+    void startTrans(stackTransition trans);
+    void stopTrans(stackTransition trans);
     std::pair<std::string, std::string> getTrans();
     void record(struct archiveInstruction message);
     void record(struct archiveTransition trans);
+    void record(struct archiveInitial init);
 
 private:
 	uint stepCount;
@@ -141,6 +192,7 @@ private:
 	std::stack<std::pair<std::string, std::string>> transStack;
 	uint transCount;
 	std::vector<archiveStep> steps;
+    std::vector<archiveInitial> initial;
 };
 
 #endif

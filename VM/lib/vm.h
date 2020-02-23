@@ -14,6 +14,7 @@
 #include "object.h"
 #include "instance.h"
 #include "outputgen.h"
+#include "yaml-cpp/yaml.h"
 
 #include <getopt.h>
 #include <fstream>
@@ -28,6 +29,7 @@ public:
     std::list<instance*> objectInstance;
     std::string mainName;
     std::ifstream srcFile;
+    YAML::Node scenario;
     std::string parseLine;
 
     outputgen archiver;
@@ -46,6 +48,13 @@ public:
      * @param *file is string with name of the imput file
      */
     void parseInput(std::string *file);
+
+    /**
+     * Function that parses starting scenario for simulation
+     *
+     * @param *file is string with name of the imput file
+     */
+    void registerScenario(std::string *file);
 
     /**
      * Funtion that checks if parseLine contains keywords
@@ -68,6 +77,13 @@ public:
      * Load class to simulation structure
      */
     void getClasses();
+
+    /**
+     * Returns instance with specified name
+     * @param name name of instance
+     * @return null or instance pointer
+     */
+    instance * getInstance(std::string name);
 
 
     /**

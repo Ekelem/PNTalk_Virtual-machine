@@ -18,16 +18,16 @@ void outputgen::startStep()
 	counter++;
 }
 
-void outputgen::startTrans(std::pair<std::string, std::string> trans)
+void outputgen::startTrans(stackTransition trans)
 {
-    transStack.push(trans);
+    //transStack.push(trans);
 }
 
-void outputgen::stopTrans(std::pair<std::string, std::string> trans)
+void outputgen::stopTrans(stackTransition trans)
 {
-    if (!transStack.empty() && transStack.top() == trans) {
+    /*if (!transStack.empty() && transStack.top() == trans) {
         transStack.pop();
-    }
+    }*/
 }
 
 std::pair<std::string, std::string> outputgen::getTrans()
@@ -47,8 +47,14 @@ void outputgen::record(struct archiveTransition trans)
 	steps[stepCount].transitions.push_back(trans);
 }
 
+void outputgen::record(struct archiveInitial init)
+{
+    initial.push_back(init);
+}
+
 void outputgen::generate()
 {
 	cereal::JSONOutputArchive archive(std::cout);
+    archive(cereal::make_nvp("initial", initial));
 	archive(cereal::make_nvp("steps", steps));
 }

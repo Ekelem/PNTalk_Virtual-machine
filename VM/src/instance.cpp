@@ -30,6 +30,10 @@ void instance::create(object *obj) {
     }
 }
 
+void instance::recordInitial() {
+    virtualMachine->archiver.record(archiveInitial(name, reference->name, places));
+}
+
 void instance::step(std::list<std::string> *tempStack) {
 
     for(trans *transition: reference->mainMethod->transitions) {
@@ -190,7 +194,7 @@ bool instance::checkPrecond(trans *transition, std::unordered_map<std::string, s
 void instance::doInstruction(std::string *instruction,
                              std::unordered_map<std::string, std::pair<int, std::string>> *variables,
                              std::list<std::string> *tempStack) {
-
+    std::cout << "start3 " << tempStack->size() << std::endl;
     std::string inst = *instruction;
 
     int pos = 0;
@@ -257,10 +261,12 @@ void instance::doInstruction(std::string *instruction,
             if(newObj->name == className) {
 
                 static size_t id = 0;
-                std::string str = "instance-" + std::to_string(id);
-                id++;
+                std::string name;
+                while (virtualMachine->getInstance(name = "instance-" + std::to_string(id)) != nullptr) {
+                    id++;
+                }
 
-                new (newInstance) instance(&str, virtualMachine);
+                new (newInstance) instance(&name, virtualMachine);
 
                 newInstance->create(newObj);
 
@@ -399,6 +405,7 @@ void instance::doInstruction(std::string *instruction,
             // if method returned value on stack record response
             virtualMachine->archiver.record(archiveInstruction(instruction.getId(), response));
     }
+    std::cout << "end3 " << tempStack->size() << std::endl;
 }
 
 std::pair<int, std::string> instance::getVariable(std::string *var, std::unordered_map<std::string, std::pair<int, std::string>> *variables) {
@@ -424,9 +431,12 @@ bool instance::checkGuard(trans *transition, std::unordered_map<std::string, std
         in = true;
 
         if((pos = action.find("CALL ")) != std::string::npos) {
-            virtualMachine->archiver.startTrans(std::pair<std::string, std::string>(transition->name, reference->name));
+            virtualMachine->archiver.startTrans(stackTransition(transition->name, reference->name,places));
+            std::cout << "start ref: " << reference->name << std::endl;
+            std::cout << "start:" << tempStack->size() << std::endl;
             doInstruction(&action, variables, tempStack);
-            virtualMachine->archiver.stopTrans(std::pair<std::string, std::string>(transition->name, reference->name));
+            std::cout << "end:" << tempStack->size() << std::endl;
+            virtualMachine->archiver.stopTrans(stackTransition(transition->name, reference->name,places));
 
             if(tempStack->front() != "true") {
                 return false;
@@ -472,6 +482,8 @@ bool instance::checkGuard(trans *transition, std::unordered_map<std::string, std
                 tempStack->pop_front();
             }
 
+            std::cout << "end of stack:" << obj->name << std::endl;
+
         } else {
             //bool DO = true;
             if(action.find("PUSHTEMP") != std::string::npos) {
@@ -505,12 +517,14 @@ void instance::doAction(trans *transition, std::unordered_map<std::string, std::
 
     uint counter = 0;
 
-    virtualMachine->archiver.startTrans(std::pair<std::string, std::string>(transition->name, reference->name));
+    virtualMachine->archiver.startTrans(stackTransition(transition->name, reference->name,places));
     for(std::string action: transition->action) {
+        std::cout << "start2 " << tempStack->size() << std::endl;
         doInstruction(&action, variables, tempStack);
+        std::cout << "end2 " << tempStack->size() << std::endl;
         counter++;
     }
-    virtualMachine->archiver.stopTrans(std::pair<std::string, std::string>(transition->name, reference->name));
+    virtualMachine->archiver.stopTrans(stackTransition(transition->name, reference->name,places));
     if (counter) {
         struct archiveTransition trans = archiveTransition(transition->name, name, reference->name);
         virtualMachine->archiver.record(trans);

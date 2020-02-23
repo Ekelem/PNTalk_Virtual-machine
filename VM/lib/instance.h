@@ -24,7 +24,7 @@ class instance {
 public:
     std::string name;
     object *reference;
-    std::list<place*> places;
+    std::list<place *> places;
     int referenceCounter;
     vm *virtualMachine;
 
@@ -49,6 +49,13 @@ public:
      * @param tempStack is global variable for temporary stack
      */
     void step(std::list<std::string> *tempStack);
+
+    /**
+     * record initial place states
+     * @param inst instance
+     */
+
+    void recordInitial();
 
     /**
      * Delete instance and his direct children

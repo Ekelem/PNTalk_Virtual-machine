@@ -32,17 +32,19 @@ void help() {
 
 int main(int argc, char * argv[]) {
 
-    const char* const short_opts = "f:s:h";
+    const char* const short_opts = "f:s:c:h";
     const option long_opts[] = {
             {"file", required_argument, nullptr, 'f'},
+            {"scenario", required_argument, nullptr, 'c'},
             {"steps", required_argument, nullptr, 's'},
             {"help", no_argument, nullptr, 'h'},
             {nullptr, no_argument, nullptr, 0}
     };
 
     auto opt = getopt_long(argc, argv, short_opts, long_opts, nullptr);
-    int steps = 20;
+    int steps = 20;     // default value
     std::string path = "";
+    std::string scenario_path = "";
     while (opt != -1)
     {
         switch (opt)
@@ -55,6 +57,9 @@ int main(int argc, char * argv[]) {
             steps = std::stoi(optarg);
             break;
 
+            case 'c':
+                scenario_path = optarg;
+                break;
         case 'h': // -h or --help
         case '?': // Unrecognized option
         default:
@@ -71,17 +76,19 @@ int main(int argc, char * argv[]) {
 
     vm virtualMachine = vm();
 
+    if(scenario_path != "") {
+        virtualMachine.registerScenario(&scenario_path);
+    }
+
     virtualMachine.parseInput(&path);
 
     std::string str;
-
-    while(steps > 0) {
-        //virtualMachine.detail();
+    for (uint index = 1; index < steps; index++) {
+        std::cout << "start step " << index << " = " << virtualMachine.tempStack.size() << std::endl;
         virtualMachine.archiver.startStep();
         virtualMachine.step();
-        steps--;
+        std::cout << "end step " << index << " = " << virtualMachine.tempStack.size() << std::endl;
     }
-
     /*showStartingDialog(&virtualMachine);
 
     while(true) {
