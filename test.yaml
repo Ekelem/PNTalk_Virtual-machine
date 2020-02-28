@@ -1,7 +1,8 @@
 instance-28:
-  class: C0
+  class: C1
   places:
-    p8: 2
+    p: 0
 instance-29:
-  class: C0
+  class: C1
   places:
+    p: 0

@@ -122,12 +122,13 @@ void vm::setMain() {
                         std::string place_name = plit->first.Scalar();
 
                         for (auto & place: newInstance->places) {
-                            if (place->name == place_name)
-                                std::cout << place_name << std::endl;
-                            place->values.emplace_back(std::pair<int, std::string>(0, plit->second.Scalar()));
+                            if (place->name == place_name) {
+                                place->values = std::list<std::pair<int, std::string>>();
+                                place->values.emplace_back(std::pair<int, std::string>(0, plit->second.Scalar()));
+                                break;
+                            }
                         }
                     }
-                std::cout << "recordInitial" << std::endl;
                 newInstance->recordInitial();
             }
         }
@@ -598,7 +599,7 @@ void vm::detail() {
             std::cout << " - " << inst << std::endl;
         }
 
-        for(auto& element: inst->places) {
+        for(auto & element: inst->places) {
             std::cout << "\t place " << element->name << "\t = ";
             for(std::pair<int, std::string> output: element->values) {
                 std::cout << output.second << " ";

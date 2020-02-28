@@ -18,7 +18,7 @@ class trans {
 
 public:
     std::string name;
-    std::list<place*> places;
+    std::list<std::shared_ptr<place>> places;
     std::list<std::pair<std::string, std::list<std::string>>> cond;
     std::list<std::pair<std::string, std::list<std::string>>> precond;
     std::list<std::string> guard;

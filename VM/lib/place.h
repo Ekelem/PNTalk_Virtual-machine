@@ -50,18 +50,12 @@ public:
     void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, std::pair<int, std::string> & pair )
     {
 
-        ar( CEREAL_NVP_("type", pair.first)
+        ar( CEREAL_NVP_("type", pair.first),
             CEREAL_NVP_("value", pair.second));
 
         //ar(CEREAL_NVP_("value", pair.second));
     }*/
 
-    //! Serializing for place
-    /*template <class Archive> inline
-    void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, place & p )
-    {
-        ar( CEREAL_NVP_(p.name, p.values));
-    }*/
 
 };
 

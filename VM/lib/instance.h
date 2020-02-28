@@ -24,7 +24,7 @@ class instance {
 public:
     std::string name;
     object *reference;
-    std::list<place *> places;
+    std::list<std::shared_ptr<place>> places;
     int referenceCounter;
     vm *virtualMachine;
 

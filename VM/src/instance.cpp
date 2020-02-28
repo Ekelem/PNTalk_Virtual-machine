@@ -24,7 +24,8 @@ void instance::create(object *obj) {
                 auto *newPlace = (place*)malloc(sizeof(place));
                 new (newPlace) place(plc);
 
-                places.push_back(newPlace);
+
+                places.push_back(std::shared_ptr<place>(new place(plc)));
             }
         }
     }
@@ -39,6 +40,8 @@ void instance::step(std::list<std::string> *tempStack) {
     for(trans *transition: reference->mainMethod->transitions) {
 
         std::unordered_map<std::string, std::pair<int, std::string>> variables;
+
+        virtualMachine->archiver.startTrans(stackTransition(transition->name, name, reference->name, places));
 
         if(!checkCond(transition, &variables)) {
             continue;
@@ -55,6 +58,8 @@ void instance::step(std::list<std::string> *tempStack) {
         doAction(transition, &variables, tempStack);
 
         doneStep(transition, &variables, tempStack);
+
+        virtualMachine->archiver.stopTrans(stackTransition(transition->name, name, reference->name, places));
 
         this->virtualMachine->finished = false;
     }
@@ -74,7 +79,7 @@ bool instance::checkCond(trans *transition, std::unordered_map<std::string, std:
     for(std::pair<std::string, std::list<std::string>> trans: transition->cond) {
         /* Check every COND in transition */
 
-        for(place *toCheck: this->places) {
+        for(auto & toCheck: this->places) {
             if(toCheck->name == trans.first) {
                 /* If this is the searched place, check it */
                 if((toCheck->values).empty()) {
@@ -135,7 +140,7 @@ bool instance::checkPrecond(trans *transition, std::unordered_map<std::string, s
     for(std::pair<std::string, std::list<std::string>> trans: transition->precond) {
         /* Check every PRECOND in transition */
 
-        for(place *toCheck: this->places) {
+        for(auto & toCheck: this->places) {
             if(toCheck->name == trans.first) {
                 /* If this is the searched place, check it */
                 if((toCheck->values).empty()) {
@@ -194,7 +199,6 @@ bool instance::checkPrecond(trans *transition, std::unordered_map<std::string, s
 void instance::doInstruction(std::string *instruction,
                              std::unordered_map<std::string, std::pair<int, std::string>> *variables,
                              std::list<std::string> *tempStack) {
-    std::cout << "start3 " << tempStack->size() << std::endl;
     std::string inst = *instruction;
 
     int pos = 0;
@@ -405,7 +409,6 @@ void instance::doInstruction(std::string *instruction,
             // if method returned value on stack record response
             virtualMachine->archiver.record(archiveInstruction(instruction.getId(), response));
     }
-    std::cout << "end3 " << tempStack->size() << std::endl;
 }
 
 std::pair<int, std::string> instance::getVariable(std::string *var, std::unordered_map<std::string, std::pair<int, std::string>> *variables) {
@@ -431,12 +434,9 @@ bool instance::checkGuard(trans *transition, std::unordered_map<std::string, std
         in = true;
 
         if((pos = action.find("CALL ")) != std::string::npos) {
-            virtualMachine->archiver.startTrans(stackTransition(transition->name, reference->name,places));
-            std::cout << "start ref: " << reference->name << std::endl;
-            std::cout << "start:" << tempStack->size() << std::endl;
+            //virtualMachine->archiver.startTrans(stackTransition(transition->name, name, reference->name,places));
             doInstruction(&action, variables, tempStack);
-            std::cout << "end:" << tempStack->size() << std::endl;
-            virtualMachine->archiver.stopTrans(stackTransition(transition->name, reference->name,places));
+            //virtualMachine->archiver.stopTrans(stackTransition(transition->name, name, reference->name,places));
 
             if(tempStack->front() != "true") {
                 return false;
@@ -482,7 +482,7 @@ bool instance::checkGuard(trans *transition, std::unordered_map<std::string, std
                 tempStack->pop_front();
             }
 
-            std::cout << "end of stack:" << obj->name << std::endl;
+            //std::cout << "end of stack:" << obj->name << std::endl;
 
         } else {
             //bool DO = true;
@@ -517,17 +517,15 @@ void instance::doAction(trans *transition, std::unordered_map<std::string, std::
 
     uint counter = 0;
 
-    virtualMachine->archiver.startTrans(stackTransition(transition->name, reference->name,places));
+    //virtualMachine->archiver.startTrans(stackTransition(transition->name, name, reference->name,places));
     for(std::string action: transition->action) {
-        std::cout << "start2 " << tempStack->size() << std::endl;
         doInstruction(&action, variables, tempStack);
-        std::cout << "end2 " << tempStack->size() << std::endl;
         counter++;
     }
-    virtualMachine->archiver.stopTrans(stackTransition(transition->name, reference->name,places));
+    //virtualMachine->archiver.stopTrans(stackTransition(transition->name, name, reference->name,places));
     if (counter) {
         struct archiveTransition trans = archiveTransition(transition->name, name, reference->name);
-        virtualMachine->archiver.record(trans);
+        //virtualMachine->archiver.record(trans);
     }
 
 }
@@ -539,7 +537,7 @@ void instance::doneStep(trans *transition, std::unordered_map<std::string, std::
 
     /* Clear preconds */
     for(std::pair<std::string, std::list<std::string>> trans: transition->precond) {
-        for(place *toCheck: this->places) {
+        for(auto & toCheck: this->places) {
             if(toCheck->name == trans.first) {
                 for(std::pair<int, std::string> pairVal: toCheck->values) {
                     for(std::string toDelete: trans.second) {
@@ -586,7 +584,7 @@ void instance::doneStep(trans *transition, std::unordered_map<std::string, std::
 
     /* Set postconds */
     for(std::pair<std::string, std::list<std::string>> trans: transition->postcond) {
-        for(place *toCheck: this->places) {
+        for(auto & toCheck: this->places) {
             if(toCheck->name == trans.first) {
                 for(std::string val: trans.second) {
                     if(isVariable(&val)) {
@@ -652,6 +650,7 @@ void instance::callFunction(std::string *str, std::list<std::string> *tempStack)
             variables[std::get<0>(var)] = std::get<1>(var);
         }
 
+
         if(!checkCond(transition, &variables)) {
             continue;
         }
@@ -666,7 +665,11 @@ void instance::callFunction(std::string *str, std::list<std::string> *tempStack)
 
         doAction(transition, &variables, tempStack);
 
+        //virtualMachine->archiver.startTrans(stackTransition(transition->name, name, reference->name,places));
+
         doneStep(transition, &variables, tempStack);
+
+        //virtualMachine->archiver.stopTrans(stackTransition(transition->name, name, reference->name,places));
 
         if(actualMethod->isSync) {
             /* Push temp every input variable */
@@ -676,14 +679,15 @@ void instance::callFunction(std::string *str, std::list<std::string> *tempStack)
 
             tempStack->push_front("true");
         }
+
     }
 
 }
 
 void instance::deleteInstance() {
-    for(place *obj: places) {
+    /*for(place *obj: places) {
         delete obj;
-    }
+    }*/
     places.clear();
 
     delete this;

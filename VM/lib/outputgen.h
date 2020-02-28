@@ -16,11 +16,41 @@
 #include "cereal/types/list.hpp"
 #include "cereal/types/string.hpp"
 
-#include "instance.h"
+#include "place.h"
 
 #include <list>
 #include <map>
 
+namespace cereal
+{
+    //! Serializing for place pairs
+    template <class Archive> inline
+    void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, std::pair<int, std::string> & pair )
+    {
+        ar( CEREAL_NVP_("type",  pair.first),
+            CEREAL_NVP_("value", pair.second) );
+    }
+} // namespace cereal
+
+namespace cereal
+{
+    //! Serializing for place pointers
+    template <class Archive> inline
+    void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, std::shared_ptr<place> & p )
+    {
+        ar( cereal::make_nvp(p->name, p->values));
+    }
+}
+
+namespace cereal
+{
+    //! Serializing for place pointers
+    template <class Archive> inline
+    void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, place & place )
+    {
+        ar( cereal::make_nvp(place.name, place.values));
+    }
+}
 
 struct archiveInstruction
 {
@@ -104,14 +134,25 @@ struct transitionCache
 
 struct stackTransition
 {
-    std::string	caller;
+    uint32_t id;
+    std::string	name;
+    std::string caller;
     std::string cls;
-    std::list<place *> places;
+    std::list<place> places;
 
-    stackTransition(std::string name, std::string reference, std::list<place *> listPlaces) : caller(name), cls(reference), places(listPlaces)
+    friend bool operator==(const stackTransition& l, const stackTransition& r)
     {
-
+        return l.caller == r.caller && l.cls == r.cls;
     }
+
+    stackTransition(std::string trans, std::string inst, std::string reference, std::list<std::shared_ptr<place>> listPlaces) : id(0), name(trans), caller(inst), cls(reference) {
+        for (std::shared_ptr<place> p: listPlaces) {
+            places.push_back(*p);
+
+            // copy values
+        }
+    }
+    stackTransition(std::string trans, std::string inst, std::string reference) : id(0), name(trans), caller(inst), cls(reference), places(std::list<place>()) {}
 };
 
 struct archiveTransition
@@ -137,34 +178,75 @@ struct archiveTransition
    	}
 };
 
+struct archiveTransStart
+{
+    std::string name;
+    std::string inst;
+    std::string reference;
+    uint32_t id;
+    archiveTransStart(std::string trans, std::string inst, std::string cls) : name(trans), inst(inst), reference(cls) {
+        static uint32_t cnt = 0;
+        id = cnt++;
+    }
+
+    template<class Archive> void serialize(Archive & ar)
+    {
+        ar( cereal::make_nvp("name", name),
+            cereal::make_nvp("instance", inst),
+            cereal::make_nvp("class", reference),
+            cereal::make_nvp("id", id)
+        );
+    }
+};
+
+struct archiveTransEnd
+{
+    uint32_t original;
+    std::list<place> changelog;
+    archiveTransEnd(uint32_t id, std::list<place> change) : original(id), changelog(change) {}
+
+    template<class Archive> void serialize(Archive & ar)
+    {
+        ar( cereal::make_nvp("id", original),
+            cereal::make_nvp("changelog", changelog)
+        );
+    }
+};
+
 struct archiveStep
 {
 	std::vector<archiveInstruction> instructions;
-	std::vector<archiveTransition> transitions;
+	std::vector<archiveTransStart> transStarts;
+    std::vector<archiveTransEnd> transEnds;
 	archiveStep() {};
 
 	template<class Archive> void serialize(Archive & ar) 
    	{
     	ar( cereal::make_nvp("messages", instructions),
-    		cereal::make_nvp("transitions", transitions)); 
+    		cereal::make_nvp("transition_starts", transStarts),
+            cereal::make_nvp("transition_ends", transEnds));
 	} 
 };
+
 
 struct archiveInitial
 {
     std::string cls;
     std::string inst;
-    std::list<place *> places;
+    std::list<place> places;
 
-    archiveInitial(std::string instanceName, std::string instanceClass, std::list<place *> instancePlaces) : inst(instanceName), cls(instanceClass), places(instancePlaces) {
-
+    archiveInitial(std::string instanceName, std::string instanceClass, std::list<std::shared_ptr<place>> instancePlaces) : inst(instanceName), cls(instanceClass), places(std::list<place>()) {
+        for (auto & place: instancePlaces) {
+            places.push_back(*place);
+        }
     }
 
     template<class Archive> void serialize(Archive & ar)
     {
         ar( cereal::make_nvp("instance", inst),
             cereal::make_nvp("class", cls),
-            cereal::make_nvp("places", places));
+            cereal::make_nvp("places", places)
+            );
     }
 };
 
@@ -181,15 +263,16 @@ public:
     void startStep();
     void startTrans(stackTransition trans);
     void stopTrans(stackTransition trans);
-    std::pair<std::string, std::string> getTrans();
+    stackTransition getTrans();
     void record(struct archiveInstruction message);
-    void record(struct archiveTransition trans);
+    void record(struct archiveTransStart trans);
+    void record(struct archiveTransEnd trans);
     void record(struct archiveInitial init);
 
 private:
 	uint stepCount;
 	uint messageCount;
-	std::stack<std::pair<std::string, std::string>> transStack;
+	std::stack<stackTransition> transStack;
 	uint transCount;
 	std::vector<archiveStep> steps;
     std::vector<archiveInitial> initial;

@@ -84,29 +84,9 @@ int main(int argc, char * argv[]) {
 
     std::string str;
     for (uint index = 1; index < steps; index++) {
-        std::cout << "start step " << index << " = " << virtualMachine.tempStack.size() << std::endl;
         virtualMachine.archiver.startStep();
         virtualMachine.step();
-        std::cout << "end step " << index << " = " << virtualMachine.tempStack.size() << std::endl;
     }
-    /*showStartingDialog(&virtualMachine);
-
-    while(true) {
-        std::cout << "Enter input: ";
-        std::cin >> str;
-
-        if(str == "c") {
-            break;
-        } else if(str == "s" || str == "step") {
-            virtualMachine.step();
-        } else if(str == "r" || str == "run") {
-            virtualMachine.run();
-        } else if(str == "d" || str == "detail") {
-            virtualMachine.detail();
-        } else {
-            virtualMachine.help();
-        }
-    }*/
 
     virtualMachine.archiver.generate();
     virtualMachine.quit();

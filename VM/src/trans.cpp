@@ -33,9 +33,9 @@ void trans::setCond(std::string *condStr, std::pair<std::string, std::list<std::
 }
 
 void trans::deleteTrans() {
-    for(place *obj: places) {
+    /*for(place *obj: places) {
         delete obj;
-    }
+    }*/
     places.clear();
 
     delete this;
