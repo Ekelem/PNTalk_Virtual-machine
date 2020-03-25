@@ -244,7 +244,7 @@ struct archiveInitial
     template<class Archive> void serialize(Archive & ar)
     {
         ar( cereal::make_nvp("instance", inst),
-            cereal::make_nvp("class", cls),
+            cereal::make_nvp("cls", cls),
             cereal::make_nvp("places", places)
             );
     }
