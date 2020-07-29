@@ -5,17 +5,18 @@
 
 #include "../lib/outputgen.h"
 
-outputgen::outputgen() : stepCount(0)
+outputgen::outputgen() : stepCount(-1)
 {
 	
 }
 
 void outputgen::startStep()
 {
-	static uint counter = 0;
-	stepCount = counter;
+	//static uint32_t counter = 0;
+	stepCount++;
+    std::cout << "stepCount " << stepCount << std::endl;
 	steps.push_back(archiveStep());
-	counter++;
+	//counter++;
 }
 
 void outputgen::startTrans(stackTransition trans)
@@ -75,9 +76,9 @@ void outputgen::record(struct archiveInitial init)
     initial.push_back(init);
 }
 
-void outputgen::generate()
+void outputgen::generate(std::ostream & output)
 {
-	cereal::JSONOutputArchive archive(std::cout);
+	cereal::JSONOutputArchive archive(output);
     archive(cereal::make_nvp("initial", initial));
 	archive(cereal::make_nvp("steps", steps));
 }

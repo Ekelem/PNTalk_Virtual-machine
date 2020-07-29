@@ -6,7 +6,7 @@
 
 #include "../lib/global.h"
 #include "../lib/vm.h"
-
+#include "../lib/daemon.h"
 
 void badStarting() {
     std::cout << "Virtual machine has to be started as:" << std::endl;
@@ -32,17 +32,19 @@ void help() {
 
 int main(int argc, char * argv[]) {
 
-    const char* const short_opts = "f:s:c:h";
+    const char* const short_opts = "f:s:c:d:h";
     const option long_opts[] = {
             {"file", required_argument, nullptr, 'f'},
             {"scenario", required_argument, nullptr, 'c'},
             {"steps", required_argument, nullptr, 's'},
+            {"daemon", required_argument, nullptr, 'd'},
             {"help", no_argument, nullptr, 'h'},
             {nullptr, no_argument, nullptr, 0}
     };
 
     auto opt = getopt_long(argc, argv, short_opts, long_opts, nullptr);
     int steps = 20;     // default value
+    int daemon_port = 0;     // undefined
     std::string path = "";
     std::string scenario_path = "";
     while (opt != -1)
@@ -57,9 +59,12 @@ int main(int argc, char * argv[]) {
             steps = std::stoi(optarg);
             break;
 
-            case 'c':
-                scenario_path = optarg;
-                break;
+        case 'c':
+            scenario_path = optarg;
+            break;
+        case 'd':
+            daemon_port = std::stoi(optarg);
+            break;
         case 'h': // -h or --help
         case '?': // Unrecognized option
         default:
@@ -69,6 +74,13 @@ int main(int argc, char * argv[]) {
 
         opt = getopt_long(argc, argv, short_opts, long_opts, nullptr);
     }
+
+    if(daemon_port != 0)
+    {
+      Daemon server;
+      server.Run(daemon_port);
+    }
+
     if(path == "") {
         help();
         exit(1);
@@ -82,13 +94,12 @@ int main(int argc, char * argv[]) {
 
     virtualMachine.parseInput(&path);
 
-    std::string str;
-    for (uint index = 1; index < steps; index++) {
+    for (int index = 1; index < steps; index++) {
         virtualMachine.archiver.startStep();
         virtualMachine.step();
     }
 
-    virtualMachine.archiver.generate();
+    virtualMachine.archiver.generate(std::cout);
     virtualMachine.quit();
 
     return 0;

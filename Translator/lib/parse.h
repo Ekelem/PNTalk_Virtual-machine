@@ -98,6 +98,7 @@ private:
     std::tuple<int, std::string> token;
     lexAnalyzator *lex;
     semantic *sem;
+    std::ostream * _output = &std::cout;
 
     /**
      * Check if input string is operator
@@ -166,6 +167,15 @@ public:
      * Starting first analysis
      */
     void start();
+
+    void translate(std::string inputCodePath);
+
+    /**
+     * Set output stream
+     * 
+     * @param output is out stream
+     */
+    void setOutput(std::ostream & output);
 
 };
 

@@ -40,6 +40,13 @@ void parse::start() {
 
 }
 
+void parse::translate(std::string inputCodePath)
+{
+    start();
+    secondAnalysis(inputCodePath);
+    start();
+}
+
 void parse::mainLine() {
 
     getToken();
@@ -703,24 +710,27 @@ void parse::termCalc(bool guard) {
 void parse::outputCode(const std::string str, bool newLine) {
 
     if(!parse::secondCheck) {
-
         static int line = 0;
         static int lastLine = true;
         if(lastLine) {
             line++;
-            std::cout << line << ":\t" << str;
+            *_output << line << ":\t" << str;
         } else {
-            std::cout << str;
+            *_output << str;
         }
 
         if(newLine) {
-            std::cout << std::endl;
+            *_output << std::endl;
             lastLine = true;
         } else {
             lastLine = false;
         }
     }
 
+}
+
+void parse::setOutput(std::ostream & output) {
+    _output = &output;
 }
 
 bool parse::isOperator(std::string str)

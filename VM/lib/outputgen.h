@@ -191,9 +191,9 @@ struct archiveTransStart
 
     template<class Archive> void serialize(Archive & ar)
     {
-        ar( cereal::make_nvp("name", name),
+        ar( cereal::make_nvp("transition_name", name),
             cereal::make_nvp("instance", inst),
-            cereal::make_nvp("class", reference),
+            cereal::make_nvp("instance_class", reference),
             cereal::make_nvp("id", id)
         );
     }
@@ -233,9 +233,10 @@ struct archiveInitial
 {
     std::string cls;
     std::string inst;
+    uint32_t creation;
     std::list<place> places;
 
-    archiveInitial(std::string instanceName, std::string instanceClass, std::list<std::shared_ptr<place>> instancePlaces) : inst(instanceName), cls(instanceClass), places(std::list<place>()) {
+    archiveInitial(std::string instanceName, std::string instanceClass, std::list<std::shared_ptr<place>> instancePlaces, uint32_t trans_id = 0) : inst(instanceName), cls(instanceClass), creation(trans_id), places(std::list<place>()) {
         for (auto & place: instancePlaces) {
             places.push_back(*place);
         }
@@ -244,7 +245,8 @@ struct archiveInitial
     template<class Archive> void serialize(Archive & ar)
     {
         ar( cereal::make_nvp("instance", inst),
-            cereal::make_nvp("class", cls),
+            cereal::make_nvp("cls", cls),
+            cereal::make_nvp("creation", creation),
             cereal::make_nvp("places", places)
             );
     }
@@ -258,7 +260,7 @@ public:
      */
     outputgen();
 
-    void generate();
+    void generate(std::ostream & output);
 
     void startStep();
     void startTrans(stackTransition trans);

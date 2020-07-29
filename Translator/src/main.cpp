@@ -6,6 +6,8 @@
 #include "../lib/global.h"
 #include "../lib/lexAnalyzator.h"
 #include "../lib/parse.h"
+#include "../lib/daemon.h"
+#include <getopt.h>
 
 using namespace std;
 
@@ -24,17 +26,48 @@ void help(){
 
 int main(int argc, char * argv[]) {
 
-    if(argc != 3) {
+    const char* const short_opts = "f:d:h";
+    const option long_opts[] = {
+            {"file", required_argument, nullptr, 'f'},
+            {"daemon", required_argument, nullptr, 'd'},
+            {"help", no_argument, nullptr, 'h'},
+            {nullptr, no_argument, nullptr, 0}
+    };
+
+    auto opt = getopt_long(argc, argv, short_opts, long_opts, nullptr);
+    int daemon_port = 0;     // undefined
+    std::string file = "";
+    while (opt != -1)
+    {
+        switch (opt)
+        {
+        case 'f':
+            file = optarg;
+            break;
+        case 'd':
+            daemon_port = std::stoi(optarg);
+            break;
+        case 'h': // -h or --help
+        case '?': // Unrecognized option
+        default:
+            help();
+            break;
+        }
+
+        opt = getopt_long(argc, argv, short_opts, long_opts, nullptr);
+    }
+
+    if (daemon_port != 0)
+    {
+        Daemon server;
+        server.Run(daemon_port);
+    }
+
+    if (file == "")
+    {
         help();
         exit(1);
     }
-
-    if(strcmp(argv[1], "-f") != 0) {
-        help();
-        exit(1);
-    }
-
-    string file = argv[2];
 
     lexAnalyzator lex(file);
     parse parser(file);

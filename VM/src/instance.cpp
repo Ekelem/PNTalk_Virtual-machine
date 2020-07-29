@@ -42,6 +42,7 @@ void instance::step(std::list<std::string> *tempStack) {
         std::unordered_map<std::string, std::pair<int, std::string>> variables;
 
         virtualMachine->archiver.startTrans(stackTransition(transition->name, name, reference->name, places));
+        std::cout << "e" << std::endl;
 
         if(!checkCond(transition, &variables)) {
             continue;
@@ -54,13 +55,13 @@ void instance::step(std::list<std::string> *tempStack) {
         if(!checkGuard(transition, &variables, tempStack)) {
             continue;
         }
-
+        std::cout << "f" << std::endl;
         doAction(transition, &variables, tempStack);
-
+        std::cout << "g" << std::endl;
         doneStep(transition, &variables, tempStack);
-
+        std::cout << "h" << std::endl;
         virtualMachine->archiver.stopTrans(stackTransition(transition->name, name, reference->name, places));
-
+        std::cout << "i" << std::endl;
         this->virtualMachine->finished = false;
     }
 }
@@ -237,7 +238,7 @@ void instance::doInstruction(std::string *instruction,
 
             // record creating instance of object
             virtualMachine->archiver.record(archiveInstruction("create instance", name, reference->name, ref->name, ref->reference->name));
-
+            virtualMachine->archiver.record(archiveInitial(ref->name, ref->reference->name, ref->places, virtualMachine->archiver.getTrans().id));
             obj = true;
         } else {
             if(!tempStack->empty()) {

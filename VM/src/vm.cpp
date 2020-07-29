@@ -88,8 +88,9 @@ void vm::setMain() {
 
             std::string str = "main";
 
-            instance *newInstance = (instance*)malloc(sizeof(instance));
-            new (newInstance) instance(&str, this);
+            //instance *newInstance = (instance*)malloc(sizeof(instance));
+            //new (newInstance) instance(&str, this);
+            instance* newInstance = new instance(&str, this);
 
             newInstance->create(main);
             newInstance->referenceCounter = INT32_MAX;    /* Only for main */
@@ -573,7 +574,9 @@ void vm::step() {
                 objectInstance.remove(obj);
                 obj->deleteInstance();
             } else {
+                std::cout << "c" << std::endl;
                 obj->step(&tempStack);
+                std::cout << "d" << std::endl;
             }
         }
     }

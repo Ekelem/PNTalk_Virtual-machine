@@ -1,0 +1,20 @@
+version: '3'
+    
+services:
+    virtual-machine:
+        build: ./VM
+        command: /bin/sh -c "/VM/entrypoint.sh"
+        ports:
+            - "51898:51898"
+        links: 
+            - "translator"
+        volumes: 
+            - "./VM:/VM:rw"
+    translator:
+        build: ./Translator
+        command: /bin/sh -c "/Translator/entrypoint.sh"
+        ports:
+            - "51899:51899"
+        volumes:
+            - "./Translator:/Translator:rw"
+
