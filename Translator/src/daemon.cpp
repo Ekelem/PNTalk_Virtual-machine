@@ -1,3 +1,5 @@
+// from template example: https://github.com/grpc/grpc/blob/master/examples/cpp/helloworld/greeter_async_server.cc
+
 #include "../lib/daemon.h"
 #include "../lib/global.h"
 #include "../lib/lexAnalyzator.h"

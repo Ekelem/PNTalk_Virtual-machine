@@ -1,6 +1,6 @@
 /**
  * @file    main.cpp
- * @author  Tomas Lapsansky <xlapsa00@stud.fit.vutbr.cz>
+ * @author  Tomas Lapsansky <xlapsa00@stud.fit.vutbr.cz>,
  *          Erik Kelemen <xkelem01@stud.fit.vutbr.cz>
  */
 

@@ -1,3 +1,12 @@
+/**
+ * @file    daemon.h
+ * @author  Erik Kelemen <xkelem0100@stud.fit.vutbr.cz>
+ *
+ * @section DESCRIPTION
+ *
+ * Simulation service
+ */
+
 #include <grpc++/grpc++.h>
 #include <grpc/support/log.h>
 #include "translate.grpc.pb.h"

@@ -42,7 +42,6 @@ void instance::step(std::list<std::string> *tempStack) {
         std::unordered_map<std::string, std::pair<int, std::string>> variables;
 
         virtualMachine->archiver.startTrans(stackTransition(transition->name, name, reference->name, places));
-        std::cout << "e" << std::endl;
 
         if(!checkCond(transition, &variables)) {
             continue;
@@ -55,13 +54,9 @@ void instance::step(std::list<std::string> *tempStack) {
         if(!checkGuard(transition, &variables, tempStack)) {
             continue;
         }
-        std::cout << "f" << std::endl;
         doAction(transition, &variables, tempStack);
-        std::cout << "g" << std::endl;
         doneStep(transition, &variables, tempStack);
-        std::cout << "h" << std::endl;
         virtualMachine->archiver.stopTrans(stackTransition(transition->name, name, reference->name, places));
-        std::cout << "i" << std::endl;
         this->virtualMachine->finished = false;
     }
 }
@@ -483,10 +478,7 @@ bool instance::checkGuard(trans *transition, std::unordered_map<std::string, std
                 tempStack->pop_front();
             }
 
-            //std::cout << "end of stack:" << obj->name << std::endl;
-
         } else {
-            //bool DO = true;
             if(action.find("PUSHTEMP") != std::string::npos) {
                 std::string val = action.substr(9, std::string::npos);
                 if(isVariable(&val)) {

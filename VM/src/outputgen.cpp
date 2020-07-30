@@ -12,11 +12,8 @@ outputgen::outputgen() : stepCount(-1)
 
 void outputgen::startStep()
 {
-	//static uint32_t counter = 0;
 	stepCount++;
-    std::cout << "stepCount " << stepCount << std::endl;
 	steps.push_back(archiveStep());
-	//counter++;
 }
 
 void outputgen::startTrans(stackTransition trans)

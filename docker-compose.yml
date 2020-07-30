@@ -1,3 +1,6 @@
+# author: Erik Kelemen
+# Simulator and translator configuration.
+
 version: '3'
     
 services:

@@ -574,9 +574,7 @@ void vm::step() {
                 objectInstance.remove(obj);
                 obj->deleteInstance();
             } else {
-                std::cout << "c" << std::endl;
                 obj->step(&tempStack);
-                std::cout << "d" << std::endl;
             }
         }
     }

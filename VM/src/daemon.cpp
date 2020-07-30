@@ -1,3 +1,10 @@
+/**
+ * @file    daemon.cpp
+ * @author  Erik Kelemen <xkelem01@stud.fit.vutbr.cz>
+ */
+
+// from template example: https://github.com/grpc/grpc/blob/master/examples/cpp/helloworld/greeter_async_server.cc
+
 #include "../lib/daemon.h"
 #include "../lib/global.h"
 #include "../lib/vm.h"
@@ -65,10 +72,6 @@ void Daemon::CallData::Proceed()
         // part of its FINISH state.
         new CallData(service_, cq_, translator_);
 
-        // The actual processing.
-
-        std::cout << "virtual machine" << std::endl;
-
         TranslateReply semicode = translator_->translate(request_.code());
         if (semicode.status() != 200)
         {
@@ -80,12 +83,40 @@ void Daemon::CallData::Proceed()
         }
         std::size_t hash = std::hash<std::string>{}(semicode.code());
         std::ofstream inputfile;
-        std::string inputCodePath = "/tmp/" + std::to_string(hash) + ".code";
+        std::string inputCodePath = "/tmp/" + std::to_string(hash) + ".semi";
+        std::string outputCodePath = "/tmp/" + std::to_string(hash) + ".output";
+        std::string errorCodePath = "/tmp/" + std::to_string(hash) + ".error";
+
+        // create input file
         inputfile.open(inputCodePath, std::ofstream::out | std::ofstream::trunc);
         inputfile << semicode.code() << std::endl;
         inputfile.close();
 
-        std::cout << "Translated: " << semicode.code() << std::endl;
+        std::system(("./Translator2 -f " + inputCodePath + " > " + outputCodePath + " 2> " + errorCodePath).c_str());
+        std::ifstream errorFile(errorCodePath);
+        if (errorFile.is_open())
+        {
+            if (errorFile.peek() == std::ifstream::traits_type::eof())
+            {
+                std::ifstream outputFile(outputCodePath);
+                if (outputFile.is_open())
+                {
+                    std::string code((std::istreambuf_iterator<char>(outputFile)),std::istreambuf_iterator<char>());
+                    reply_.set_result(code);
+                    reply_.set_status(200);
+                }
+                else
+                {
+                    reply_.set_status(500);
+                }
+            }
+            else
+            {
+                std::string code((std::istreambuf_iterator<char>(errorFile)),std::istreambuf_iterator<char>());
+                reply_.set_result(code);
+                reply_.set_status(403);
+            }       
+        }
         
         vm virtualMachine = vm();
 

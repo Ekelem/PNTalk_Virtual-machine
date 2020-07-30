@@ -1,5 +1,5 @@
 /**
- * @file    outgen.h
+ * @file    outputgen.h
  * @author  Erik Kelemen <xkelem01@stud.fit.vutbr.cz>
  *
  * @section DESCRIPTION
@@ -66,14 +66,12 @@ struct archiveInstruction
 
     uint respondTo;
 
-	//std::map<std::string, std::string> args;
     archiveInstruction(uint id, std::vector<std::string> respoonses ) {
         respondTo = id;
         response = respoonses;
     }
-	//archiveInstruction(std::string instruction);
-	//archiveInstruction(std::string instruction, std::string caller, std::string callerClass) : name(instruction), caller(caller), callerClass(callerClass), reciever(""), recieverClass("") {}
-	archiveInstruction(std::string instruction, std::string caller, std::string callerClass, std::string reciever, std::string recieverClass) : name(instruction), caller(caller), callerClass(callerClass), reciever(reciever), recieverClass(recieverClass) {
+	
+    archiveInstruction(std::string instruction, std::string caller, std::string callerClass, std::string reciever, std::string recieverClass) : name(instruction), caller(caller), callerClass(callerClass), reciever(reciever), recieverClass(recieverClass) {
 	    static uint id_provider = 0;
 	    id = id_provider;
 	    id_provider++;
@@ -124,12 +122,6 @@ struct transitionCache
     std::string name;
     std::string cls;
     std::map<std::string, std::list<std::string>> state;
-
-    /*transitionCache(instance & inst) : name(inst->name), cls(inst->reference->name), state(inst->)
-    {
-
-    }*/
-
 };
 
 struct stackTransition
@@ -255,9 +247,6 @@ struct archiveInitial
 class outputgen {
 
 public:
-    /**
-     * Default constructor
-     */
     outputgen();
 
     void generate(std::ostream & output);
