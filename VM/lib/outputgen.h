@@ -110,6 +110,12 @@ struct archiveResponse
 
     }
 
+    /**
+    * General serialization method
+    *
+    * @param ar archive for serialization
+    * @return serialized object
+    */
     template<class Archive> void serialize(Archive & ar)
     {
         ar( cereal::make_nvp("message_id", refId),
@@ -137,11 +143,17 @@ struct stackTransition
         return l.caller == r.caller && l.cls == r.cls;
     }
 
+    /**
+     * Constructor, copy current place values
+     *
+     * @param trans transition name
+     * @param inst instance identificator
+     * @param reference class identificator
+     * @param listPlaces memory footprint of places, later used for computation of changelog
+     */
     stackTransition(std::string trans, std::string inst, std::string reference, std::list<std::shared_ptr<place>> listPlaces) : id(0), name(trans), caller(inst), cls(reference) {
         for (std::shared_ptr<place> p: listPlaces) {
             places.push_back(*p);
-
-            // copy values
         }
     }
     stackTransition(std::string trans, std::string inst, std::string reference) : id(0), name(trans), caller(inst), cls(reference), places(std::list<place>()) {}
@@ -153,8 +165,14 @@ struct archiveTransition
 	std::string name;
 	std::string	instance;
 	std::string reference;
-	//std::list<place *> places;
 
+    /**
+     * Constructor, id assignment
+     *
+     * @param transition transition name
+     * @param instance instance identificator
+     * @param instanceClass class identificator
+     */
 	archiveTransition(std::string transition, std::string instance, std::string instanceClass)
 	: name(transition), instance(instance), reference(instanceClass) {
         static uint id_provider = 0;
@@ -162,6 +180,7 @@ struct archiveTransition
         id = id_provider;
 	}
 
+    //serialization
 	template<class Archive> void serialize(Archive & ar) 
    	{ 
     	ar( cereal::make_nvp("id", id), cereal::make_nvp("transition_name", name),
@@ -176,11 +195,20 @@ struct archiveTransStart
     std::string inst;
     std::string reference;
     uint32_t id;
+
+    /**
+     * Constructor, allocating id
+     *
+     * @param trans transition name
+     * @param inst instance identificator
+     * @param cls class identificator
+     */
     archiveTransStart(std::string trans, std::string inst, std::string cls) : name(trans), inst(inst), reference(cls) {
         static uint32_t cnt = 0;
         id = cnt++;
     }
 
+    // serialization
     template<class Archive> void serialize(Archive & ar)
     {
         ar( cereal::make_nvp("transition_name", name),
@@ -191,12 +219,21 @@ struct archiveTransStart
     }
 };
 
+
 struct archiveTransEnd
 {
     uint32_t original;
     std::list<place> changelog;
+
+    /**
+     * Constructor, referencing start and changelog captures
+     *
+     * @param id transition identificator
+     * @param change captured change
+     */
     archiveTransEnd(uint32_t id, std::list<place> change) : original(id), changelog(change) {}
 
+    // serialization
     template<class Archive> void serialize(Archive & ar)
     {
         ar( cereal::make_nvp("id", original),
@@ -210,6 +247,10 @@ struct archiveStep
 	std::vector<archiveInstruction> instructions;
 	std::vector<archiveTransStart> transStarts;
     std::vector<archiveTransEnd> transEnds;
+
+    /**
+     * Default constructor
+     */
 	archiveStep() {};
 
 	template<class Archive> void serialize(Archive & ar) 
@@ -228,12 +269,21 @@ struct archiveInitial
     uint32_t creation;
     std::list<place> places;
 
-    archiveInitial(std::string instanceName, std::string instanceClass, std::list<std::shared_ptr<place>> instancePlaces, uint32_t trans_id = 0) : inst(instanceName), cls(instanceClass), creation(trans_id), places(std::list<place>()) {
+    /**
+     * Constructor, init state of instances
+     *
+     * @param instanceName instance identificator
+     * @param instanceClass class identificator
+     * @param instancePlaces current places
+     * @param transId create transition identifier
+     */
+    archiveInitial(std::string instanceName, std::string instanceClass, std::list<std::shared_ptr<place>> instancePlaces, uint32_t transId = 0) : inst(instanceName), cls(instanceClass), creation(transId), places(std::list<place>()) {
         for (auto & place: instancePlaces) {
             places.push_back(*place);
         }
     }
 
+    // serialize
     template<class Archive> void serialize(Archive & ar)
     {
         ar( cereal::make_nvp("instance", inst),
@@ -249,15 +299,64 @@ class outputgen {
 public:
     outputgen();
 
+    /**
+     * Generate output on stream from captured data
+     *
+     * @param output output stream
+     */
     void generate(std::ostream & output);
 
+    /**
+     * Record starting new step and finishing previous
+     */
     void startStep();
+
+    /**
+     * Internaly record starting of transition
+     *
+     * @param trans transition data
+     */
     void startTrans(stackTransition trans);
+
+    /**
+     * Internaly record finish of transition
+     *
+     * @param trans transition data
+     */
     void stopTrans(stackTransition trans);
+
+    /**
+     * Get active transition
+     * @return transition data
+     */
     stackTransition getTrans();
+
+    /**
+     * Record message from simulation
+     *
+     * @param message message data
+     */
     void record(struct archiveInstruction message);
+
+    /**
+     * Record transition start from simulation
+     *
+     * @param trans transition start data
+     */
     void record(struct archiveTransStart trans);
+
+    /**
+     * Record transition end from simulation
+     *
+     * @param trans transition end data
+     */
     void record(struct archiveTransEnd trans);
+
+    /**
+     * Record initialization of new instance from simulation
+     *
+     * @param init initialization data
+     */
     void record(struct archiveInitial init);
 
 private:
