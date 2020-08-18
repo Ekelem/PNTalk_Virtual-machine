@@ -92,7 +92,7 @@ void Daemon::CallData::Proceed()
         inputfile << semicode.code() << std::endl;
         inputfile.close();
 
-        std::system(("./Translator2 -f " + inputCodePath + " > " + outputCodePath + " 2> " + errorCodePath).c_str());
+        std::system(("./VM2 -f " + inputCodePath + " -s " + std::to_string(request_.steps()) + " > " + outputCodePath + " 2> " + errorCodePath).c_str());
         std::ifstream errorFile(errorCodePath);
         if (errorFile.is_open())
         {
@@ -117,44 +117,7 @@ void Daemon::CallData::Proceed()
                 reply_.set_status(403);
             }       
         }
-        
-        vm virtualMachine = vm();
 
-        if (request_.scenario() != "")
-        {
-            hash = std::hash<std::string>{}(request_.scenario());
-            std::ofstream scenariofile;
-            std::string scenarioPath = "/tmp/" + std::to_string(hash) + ".scrio";
-            scenariofile.open(scenarioPath, std::ofstream::out | std::ofstream::trunc);
-            scenariofile << request_.scenario() << std::endl;
-            scenariofile.close();
-            virtualMachine.registerScenario(&scenarioPath);
-        }
-
-        virtualMachine.parseInput(&inputCodePath);
-        std::cout << "parse input " << std::endl;
-
-    for (int index = 1; index < request_.steps(); index++) {
-        std::cout << "step " << index << request_.steps() << std::endl;
-        virtualMachine.archiver.startStep();
-        std::cout << "step after " << index << std::endl;
-        virtualMachine.step();
-    }
-    std::cout << "steps " << std::endl;
-    std::cout << "Output:" << std::endl;
-        std::stringstream output;
-
-    virtualMachine.archiver.generate(output);
-    virtualMachine.quit();
-    std::cout << output.str() << std::endl;
-
-        reply_.set_result(output.str());
-
-        // And we are done! Let the gRPC runtime know we've finished, using the
-        // memory address of this instance as the uniquely identifying tag for
-        // the event.
-        virtualMachine.quit();
-        std::cout << "quit" << std::endl;
         status_ = FINISH;
         responder_.Finish(reply_, Status::OK, this);
     }
