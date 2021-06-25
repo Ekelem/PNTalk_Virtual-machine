@@ -23,7 +23,7 @@
 
 namespace cereal
 {
-    //! Serializing for place pairs
+    // Serializing for place pairs
     template <class Archive> inline
     void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, std::pair<int, std::string> & pair )
     {
@@ -34,7 +34,7 @@ namespace cereal
 
 namespace cereal
 {
-    //! Serializing for place pointers
+    // Serializing for place pointers
     template <class Archive> inline
     void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, std::shared_ptr<place> & p )
     {
@@ -44,7 +44,7 @@ namespace cereal
 
 namespace cereal
 {
-    //! Serializing for place pointers
+    // Serializing for places
     template <class Archive> inline
     void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, place & place )
     {
@@ -71,6 +71,15 @@ struct archiveInstruction
         response = respoonses;
     }
 	
+    /**
+     * Constructor, instruction
+     *
+     * @param instruction instruction keyword
+     * @param caller caller object instance identifier
+     * @param callerClass caller object class identifier
+     * @param receiver receiver object instance identifier
+     * @param receiverClass receiver object class identifier
+     */
     archiveInstruction(std::string instruction, std::string caller, std::string callerClass, std::string reciever, std::string recieverClass) : name(instruction), caller(caller), callerClass(callerClass), reciever(reciever), recieverClass(recieverClass) {
 	    static uint id_provider = 0;
 	    id = id_provider;
@@ -85,6 +94,7 @@ struct archiveInstruction
 	    return id;
 	}
 
+    // serialize
 	template<class Archive> void serialize(Archive & ar) 
    	{
         if (!respondTo)
@@ -106,16 +116,17 @@ struct archiveResponse
     uint refId;
     std::string value;
 
+    /**
+     * Constructor, reesponse message
+     *
+     * @param messageId message identifier
+     * @param response response
+     */
     archiveResponse(uint messageId, std::string response) : refId(messageId), value(response) {
 
     }
 
-    /**
-    * General serialization method
-    *
-    * @param ar archive for serialization
-    * @return serialized object
-    */
+    // serialize
     template<class Archive> void serialize(Archive & ar)
     {
         ar( cereal::make_nvp("message_id", refId),

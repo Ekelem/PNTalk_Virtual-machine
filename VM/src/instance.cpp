@@ -396,8 +396,21 @@ void instance::doInstruction(std::string *instruction,
 
         size_t head = tempStack->size();
         obj->callFunction(&functionName, tempStack);
-        size_t offset = tempStack->size() > head ? tempStack->size() - head : 0;
+
+        method *actualMethod = nullptr;
+
+        for(method * check: reference->methods) {
+            if(check->name == functionName) {
+                actualMethod = check;
+                break;
+            }
+        }
+
+        // Difference on stack will determine number of returned values
+        size_t offset = tempStack->size() + actualMethod->params.size() > head ? tempStack->size() + actualMethod->params.size() - head : 0;
         std::vector<std::string> response = std::vector<std::string>();
+
+        
         for (size_t i = 1; i <= offset; i++) {
             response.push_back(*std::next(tempStack->begin(), tempStack->size()-i));
         }

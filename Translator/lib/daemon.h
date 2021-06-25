@@ -5,6 +5,7 @@
  * @section DESCRIPTION
  *
  * Simulation service
+ * from template example: https://github.com/grpc/grpc/blob/master/examples/cpp/helloworld/greeter_async_server.cc
  */
 
 #include <grpc++/grpc++.h>

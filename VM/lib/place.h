@@ -45,18 +45,6 @@ public:
      */
     bool isSet(std::string *str);
 
-
-    /*template <class Archive> inline
-    void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, std::pair<int, std::string> & pair )
-    {
-
-        ar( CEREAL_NVP_("type", pair.first),
-            CEREAL_NVP_("value", pair.second));
-
-        //ar(CEREAL_NVP_("value", pair.second));
-    }*/
-
-
 };
 
 #endif //BP_PLACE_H
